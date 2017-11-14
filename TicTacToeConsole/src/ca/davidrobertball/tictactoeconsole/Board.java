@@ -47,38 +47,77 @@ public class Board {
 	}
 	
 	public CellValues checkWin() {
-		//If there is no winner then return EMPTY.
-		CellValues cv = CellValues.EMPTY;
+		//Variables to hold row and column values;
+		int r;
+		int c;
 		
 		//Check every row.
-		for(int r = 0; r < rows; r++) {
-			for(int c = 0; c < (columns - 1); c++) {
-				//Process every column in each row.
+		for(r = 0; r < rows; r++) {
+			for(c = 0; c < (columns - 1); c++) {
+				//If that value is the same as the next value, continue.
 				if(cells[r][c].getValue() == cells[r][c + 1].getValue()) {
-					cv = cells[r][c].getValue();
+					//If we have compared every value including the last value in the row, return that value.
+					if((c + 1) == (columns - 1)) {
+						return cells[r][c].getValue();
+					}
 				} else {
-					cv = CellValues.EMPTY;
+					//If there is ever a value that doesn't match break from the loop.
 					break;
 				}
 			}
 		}
 		
 		//Check every column.
-		for(int c = 0; c < columns; c++) {
-			for(int r = 0 ; r < (rows - 1); r++) {
+		for(c = 0; c < columns; c++) {
+			for(r = 0 ; r < (rows - 1); r++) {
 				if(cells[r][c].getValue() == cells[r + 1][c].getValue()) {
-					cv = cells[r][c].getValue();
+					//If all the values have matched then return that value as the winner.
+					if((r + 1) == (rows - 1)) {
+						return cells[r][c].getValue();
+					}
 				} else {
-					cv = CellValues.EMPTY;
 					break;
 				}
 			}
 		}
 		
 		//Check both diagonals.
+		//Top left to bottom right.
+		r = 0;
+		c = 0;
+		while(true) {
+			//Then check if tthe current value equals the next value.
+			if(cells[r][c].getValue() == cells[r + 1][c + 1].getValue()) {
+				//If so, and we have compared the last value, then return the value.
+				if((r + 1) == (rows - 1) && (c + 1) == (columns - 1)) {
+					return cells[r][c].getValue();
+				}
+			} else {
+				//If not, break out of  loop.
+				break;
+			}
+			//Increment the row and column values.
+			r++;
+			c++;
+		}
 		
+		//Top right to bottom left.
+		r = 0;
+		c = columns - 1;
+		while(true) {
+			if(cells[r][c].getValue() == cells[r + 1][c - 1].getValue()) {
+				if((r + 1) == (rows - 1) && (c - 1) == 0) {
+					return cells[r][c].getValue();
+				}
+			} else {
+				break;
+			}
+			r++;
+			c--;
+		}
 		
-		return cv;
+		//Return an EMPTY value if there is no winner.
+		return CellValues.EMPTY;
 	}
 	
 	//Utility Methods
@@ -86,7 +125,7 @@ public class Board {
 		//Call this method after checkWin to see if there is a winner first.
 		for(int r = 0; r < rows; r++) {
 			for(int c = 0; c < columns; c++) {
-				//If the board doesn't contain an empty cell then it is a draw.
+				//If the board contains an empty cell then it is not a draw.
 				if(cells[r][c].getValue() == CellValues.EMPTY) {
 					return false;
 				}
