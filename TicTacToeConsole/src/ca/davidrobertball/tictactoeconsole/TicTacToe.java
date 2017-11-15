@@ -10,6 +10,11 @@
 //			This is how the user will select where to place game piece.
 //			Quadrants are numbered from 1 - 9 (for standard game board). Left to right, top to bottom.
 
+//TODO	computerTurn Algorithm:
+//			Find 2 surrounding and take the middle, if empty.
+//			Find 2 in a row and take the 3rd, if empty.
+//			Impement after attempt to set up multiple options.
+
 package ca.davidrobertball.tictactoeconsole;
 
 import java.io.BufferedReader;
@@ -113,12 +118,11 @@ public class TicTacToe {
 	}
 	
 	private void runGame() {
-		//Do a coin flip to see which player will go first.
-		System.out.println("Flipping coin...");
-		coinFlip();
-		
 		//Print player information and game board.
 		printGameInfo();
+		
+		//Do a coin flip to see which player will go first.
+		coinFlip();
 		
 		CellValues winner = CellValues.EMPTY;
 		//Run the game logic until there is a winner or a draw.
@@ -169,6 +173,7 @@ public class TicTacToe {
 	}
 	
 	private void coinFlip() {
+		System.out.println("Flipping coin...");
 		//Generate random with: (int)(Math.random() * (HIGH - LOW + 1) + LOW)
 		playerTurn = (int)(Math.random() * (2 - 1 + 1) + 1);
 		switch(playerTurn) {
@@ -221,15 +226,52 @@ public class TicTacToe {
 	}
 	
 	private void computerTurn(Player p) {
+		//1. Attempt to take the center.
+		//	1a. Find the center of the board.
+		int row = (board.getRows() / 2);
+		int column = (board.getColumns() / 2);
+		//	1b. Take the center spot if it is empty.
+		if(board.getBoard(row, column) == CellValues.EMPTY) {
+			board.setBoard(row, column, p.getPiece());
+			return;
+		}
+		
+		//2. Attempt to take 3 corners (set up multiple options).
+		//	2a. Set corner values.
+		int cornerRowValues[] = {0, 0, (board.getRows() - 1), (board.getRows() - 1)};
+		int cornerColumnValues[] = {0, (board.getColumns() - 1), 0, (board.getColumns() - 1)};
+		//	2b. Once 3 corners are taken don't take another. Also make sure there is a free corner.
+		int cornersTaken = 0;
+		boolean freeCorner = false;
+		for(int r = 0; r < cornerRowValues.length; r++) {
+			for(int c = 0; c < cornerColumnValues.length; c++) {
+				if(board.getBoard(cornerRowValues[r], cornerColumnValues[c]) == p.getPiece()) {
+					cornersTaken++;
+				}
+				if(board.getBoard(cornerRowValues[r], cornerColumnValues[c]) == CellValues.EMPTY) {
+					freeCorner = true;
+				}
+			}
+		}
+		//	2c. Choose corner at random.
+		if(cornersTaken < 3 && freeCorner) {
+			while(true) {
+				int corner = (int)(Math.random() * ((cornerRowValues.length - 1) - 0 + 1) + 0);
+				if(board.getBoard(cornerRowValues[corner], cornerColumnValues[corner]) == CellValues.EMPTY) {
+					board.setBoard(cornerRowValues[corner], cornerColumnValues[corner], p.getPiece());
+					return;
+				}
+			}
+		}
+		
+		//3. Take adjacent tiles (if there are no spaces left then checkDraw would have been called).
+		//	3a. Choose a leftover tile at random.
 		while(true) {
-			//Generate random with: (int)(Math.random() * (HIGH - LOW + 1) + LOW)
-			int row = (int)(Math.random() * (board.getRows() - 1 + 1) + 1);
-			int column = (int)(Math.random() * (board.getColumns() - 1 + 1) + 1);
-			
-			//Check to ensure the space on the board is available.
-			if(board.getBoard(row - 1, column - 1) == CellValues.EMPTY) {
-				board.setBoard(row - 1, column - 1, p.getPiece());
-				break;
+			row = (int)(Math.random() * ((board.getRows() - 1) - 0 + 1) + 0);
+			column = (int)(Math.random() * ((board.getColumns() - 1) - 0 + 1) + 0);
+			if(board.getBoard(row, column) == CellValues.EMPTY) {
+				board.setBoard(row, column, p.getPiece());
+				return;
 			}
 		}
 	}
