@@ -42,6 +42,10 @@ public class Player {
 	
 	//Utility Methods
 	public void printPlayer() {
+		System.out.println(name + " is " + piece.toString());
+	}
+	
+	public void printWins() {
 		System.out.println(name + ": " + wins);
 	}
 }//End of class.

@@ -13,8 +13,25 @@ public class Board {
 	private int rows;
 	private int columns;
 	
+	//Constants
+	private static final int DEFAULT_ROWS = 3;
+	private static final int DEFAULT_COLUMNS = 3;
+	
 	//Constructors
 	public Board() {
+		rows = DEFAULT_ROWS;
+		columns = DEFAULT_COLUMNS;
+		initializeBoard();
+	}
+	
+	public Board(int sideLength) {
+		//If using a custom board the board must be a square.
+		rows = sideLength;
+		columns = sideLength;
+		initializeBoard();
+	}
+	
+	private void initializeBoard() {
 		cells = new Cell[rows][columns];
 		//Initialize the value for each cell.
 		for(int r = 0; r < rows; r++) {
@@ -155,25 +172,16 @@ public class Board {
 	}
 	
 	private void rowContents(int r) {
-		rowFormatting();
 		int c = 0;
 		for(; c < (columns - 1); c++) {
 			System.out.print(" " + cells[r][c].toString() + " |");
 		}
 		System.out.println(" " + cells[r][c].toString());
-		rowFormatting();
-	}
-	
-	private void rowFormatting() {
-		for(int i = 0; i < (columns - 1); i++) {
-			System.out.print("   |");
-		}
-		System.out.println();
 	}
 	
 	private void rowDivider() {
 		for(int i = 0; i < (columns - 1); i++) {
-			System.out.print("----");
+			System.out.print("---+");
 		}
 		System.out.println("---");
 	}
