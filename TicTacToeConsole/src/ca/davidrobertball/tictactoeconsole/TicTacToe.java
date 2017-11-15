@@ -6,7 +6,9 @@
  * Date:					Nov 13, 2017
  */
 
-//TODO Implement a displayBoard to show quadrants. This is how the user will select where to place game piece.
+//TODO	Implement a displayBoard to show quadrants.
+//			This is how the user will select where to place game piece.
+//			Quadrants are numbered from 1 - 9 (for standard game board). Left to right, top to bottom.
 
 package ca.davidrobertball.tictactoeconsole;
 
@@ -26,6 +28,7 @@ public class TicTacToe {
 	public TicTacToe(){
 		board = new Board();
 		in = new BufferedReader(new InputStreamReader(System.in));
+		//Call the initialize method to run the program and initialize other attributes.
 	}
 	
 	//Utility Functions
@@ -119,7 +122,7 @@ public class TicTacToe {
 			board.printBoard();
 			//Player 2's turn (OR computer's turn).
 			if(multiplayer) { playerTurn(player2); }
-			else { computerTurn(); }
+			else { computerTurn(player2); }
 			board.printBoard();
 			//Check if there is a winner.
 			winner = board.checkWin();
@@ -129,6 +132,7 @@ public class TicTacToe {
 				break;
 			}
 		}
+		
 		//Once there is a winner or the game is a draw, add to wins, and print game over menu.
 		if(winner == player1.getPiece()) {
 			System.out.println(player1.getName() + " (" + player1.getPiece().toString() + "'s) is the winner!");
@@ -151,11 +155,38 @@ public class TicTacToe {
 	}
 	
 	private void playerTurn(Player p) {
+		System.out.println("Enter coordinates for where you want to place an " + p.getPiece().toString() + ".");
 		
+		while(true) {
+			//Get the location of where the user wants to place their piece.
+			System.out.print("Enter row(1 - " + board.getRows() + "): ");
+			int row = ValidateInput.getInt(1, board.getRows());
+			System.out.print("Enter column(1 - " + board.getColumns() + "): ");
+			int column = ValidateInput.getInt(1, board.getColumns());
+			System.out.println();
+			
+			//Check to ensure that the space on the board is available.
+			if(board.getBoard(row - 1, column - 1) == CellValues.EMPTY) {
+				board.setBoard(row - 1, column - 1, p.getPiece());
+				break;
+			} else {
+				System.out.println("There is already a piece at that location.\n");
+			}
+		}
 	}
 	
-	private void computerTurn() {
-		
+	private void computerTurn(Player p) {
+		while(true) {
+			//Generate random with: (int)(Math.random() * (HIGH - LOW + 1) + LOW)
+			int row = (int)(Math.random() * (board.getRows() - 1 + 1) + 1);
+			int column = (int)(Math.random() * (board.getColumns() - 1 + 1) + 1);
+			
+			//Check to ensure the space on the board is available.
+			if(board.getBoard(row - 1, column - 1) == CellValues.EMPTY) {
+				board.setBoard(row - 1, column - 1, p.getPiece());
+				break;
+			}
+		}
 	}
 	
 	private void gameOver() {
