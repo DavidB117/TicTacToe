@@ -6,6 +6,8 @@
  * Date:					Nov 13, 2017
  */
 
+//TODO Implement a displayBoard to show quadrants. This is how the user will select where to place game piece.
+
 package ca.davidrobertball.tictactoeconsole;
 
 import java.io.BufferedReader;
@@ -27,13 +29,13 @@ public class TicTacToe {
 	}
 	
 	//Utility Functions
-	public void startGame() {
+	public void initialize() {
 		welcomeMessage();
 		mainMenu();
 	}
 	
 	private void welcomeMessage() {
-		System.out.println("Tic Tac Toe\n-----------");
+		System.out.println("\tTic Tac Toe\n\t-----------");
 		System.out.println("Welcome to the console version of Tic Tac Toe.");
 		System.out.println("You can play against the computer or play against a friend.\n");
 	}
@@ -49,16 +51,20 @@ public class TicTacToe {
 		System.out.println();
 		
 		//Run option chosen by the user.
-		if(option == 1) {
+		switch(option) {
+		case 1:
 			multiplayer = false;
-			runGame();
-		} else if(option == 2) {
+			startGame();
+			break;
+		case 2:
 			multiplayer = true;
-			runGame();
-		} else if(option == 3) {
+			startGame();
+			break;
+		case 3:
 			help();
-		} else {
-			System.exit(0);
+			break;
+		default:
+			System.exit(0);	
 		}
 	}
 	
@@ -75,7 +81,7 @@ public class TicTacToe {
 		mainMenu();
 	}
 	
-	private void runGame() {
+	private void startGame() {
 		//Get player1 name.
 		System.out.print("Enter name for Player 1: ");
 		String name = getPlayerName();
@@ -90,11 +96,51 @@ public class TicTacToe {
 			player2 = new Player("COMPUTER", CellValues.NOUGHT);
 		}
 		
+		//Run the game.
+		runGame();
+	}
+	
+	private void runGame() {
 		//Display player information.
 		System.out.println();
 		player1.printPlayer();
 		player2.printPlayer();
 		System.out.println();
+		//Display the game board.
+		System.out.println("Game Board:");
+		board.printBoard();
+		System.out.println();
+		
+		//Run the game logic until there is a winner or a draw.
+		CellValues winner = CellValues.EMPTY;
+		while(winner == CellValues.EMPTY) {
+			//Player 1's turn.
+			playerTurn(player1);
+			board.printBoard();
+			//Player 2's turn (OR computer's turn).
+			if(multiplayer) { playerTurn(player2); }
+			else { computerTurn(); }
+			board.printBoard();
+			//Check if there is a winner.
+			winner = board.checkWin();
+			//Check if there is a draw.
+			if(board.checkDraw()) {
+				System.out.println("The game is a draw.");
+				break;
+			}
+		}
+		//Once there is a winner or the game is a draw, add to wins, and print game over menu.
+		if(winner == player1.getPiece()) {
+			System.out.println(player1.getName() + " (" + player1.getPiece().toString() + "'s) is the winner!");
+			player1.printWins();
+			player1.setWins(player1.getWins() + 1);
+		} else if(winner == player2.getPiece()) {
+			System.out.println(player2.getName() + " (" + player2.getPiece().toString() + "'s) is the winner!");
+			player2.printWins();
+			player2.setWins(player2.getWins() + 1);
+		}
+		System.out.println();
+		gameOver();
 	}
 	
 	private String getPlayerName() {
@@ -104,11 +150,7 @@ public class TicTacToe {
 		return name;
 	}
 	
-	private void player1Turn() {
-		
-	}
-	
-	private void player2Turn() {
+	private void playerTurn(Player p) {
 		
 	}
 	
@@ -121,11 +163,28 @@ public class TicTacToe {
 		System.out.println("\t1) Continue Playing");
 		System.out.println("\t2) Main Menu");
 		System.out.println("\t3) Exit");
+		System.out.print("Option: ");
+		int option = ValidateInput.getInt(1, 3);
+		System.out.println();
+		
+		//Run option chosen by the user.
+		switch(option) {
+		case 1:
+			runGame();
+			break;
+		case 2:
+			board.clear();
+			player1.setWins(0);
+			player2.setWins(0);
+			break;
+		default:
+			System.exit(0);
+		}
 	}
 	
 	public static void main(String[] args) {
 		//Create a TicTacToe object and run the game.
 		TicTacToe game = new TicTacToe();
-		game.startGame();
+		game.initialize();
 	}//End of main method.
 }//End of class.
