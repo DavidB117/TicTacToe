@@ -18,11 +18,12 @@ import java.io.InputStreamReader;
 
 public class TicTacToe {
 	//Attributes
-	Board board;
-	Player player1;
-	Player player2;
-	boolean multiplayer;
-	BufferedReader in;
+	private Board board;
+	private Player player1;
+	private Player player2;
+	private boolean multiplayer;
+	private int playerTurn;
+	private BufferedReader in;
 	
 	//Constructors
 	public TicTacToe(){
@@ -45,8 +46,8 @@ public class TicTacToe {
 	
 	private void mainMenu() {
 		System.out.println("Main Menu");
-		System.out.println("\t1) One Player Game");
-		System.out.println("\t2) Two Player Game");
+		System.out.println("\t1) Single Player Game");
+		System.out.println("\t2) Multiplayer Game");
 		System.out.println("\t3) How To Play");
 		System.out.println("\t4) Exit");
 		System.out.print("Option: ");
@@ -98,34 +99,54 @@ public class TicTacToe {
 		} else {
 			player2 = new Player("COMPUTER", CellValues.NOUGHT);
 		}
+		System.out.println();
 		
 		//Run the game.
 		runGame();
 	}
 	
+	private String getPlayerName() {
+		String name = "";
+		try { name = in.readLine(); }
+		catch (IOException e) { System.out.println(e.getMessage()); }
+		return name;
+	}
+	
 	private void runGame() {
-		//Display player information.
-		System.out.println();
-		player1.printPlayer();
-		player2.printPlayer();
-		System.out.println();
-		//Display the game board.
-		System.out.println("Game Board:");
-		board.printBoard();
-		System.out.println();
+		//Do a coin flip to see which player will go first.
+		System.out.println("Flipping coin...");
+		coinFlip();
 		
-		//Run the game logic until there is a winner or a draw.
+		//Print player information and game board.
+		printGameInfo();
+		
 		CellValues winner = CellValues.EMPTY;
+		//Run the game logic until there is a winner or a draw.
 		while(winner == CellValues.EMPTY) {
-			//Player 1's turn.
-			playerTurn(player1);
-			board.printBoard();
-			//Player 2's turn (OR computer's turn).
-			if(multiplayer) { playerTurn(player2); }
-			else { computerTurn(player2); }
-			board.printBoard();
+			if(playerTurn == 1) {
+				//Player 1's turn.
+				System.out.println(player1.getName() + "'s Turn");
+				playerTurn(player1);
+				board.printBoard();
+				System.out.println();
+				//Increment so player 2's turn is next.
+				playerTurn++;
+			} else {
+				//Player 2's turn.
+				System.out.println(player2.getName() +"'s Turn");
+				if(multiplayer) { playerTurn(player2); }
+				else { computerTurn(player2); }
+				board.printBoard();
+				System.out.println();
+				//Decrement so player 2's turn is next.
+				playerTurn--;
+			}
+			
 			//Check if there is a winner.
 			winner = board.checkWin();
+			if(winner != CellValues.EMPTY) {
+				break;
+			}
 			//Check if there is a draw.
 			if(board.checkDraw()) {
 				System.out.println("The game is a draw.");
@@ -135,23 +156,47 @@ public class TicTacToe {
 		
 		//Once there is a winner or the game is a draw, add to wins, and print game over menu.
 		if(winner == player1.getPiece()) {
-			System.out.println(player1.getName() + " (" + player1.getPiece().toString() + "'s) is the winner!");
-			player1.printWins();
+			System.out.println(player1.getName() + " (" + player1.getPiece().toString() + ") is the winner!");
 			player1.setWins(player1.getWins() + 1);
 		} else if(winner == player2.getPiece()) {
-			System.out.println(player2.getName() + " (" + player2.getPiece().toString() + "'s) is the winner!");
-			player2.printWins();
+			System.out.println(player2.getName() + " (" + player2.getPiece().toString() + ") is the winner!");
 			player2.setWins(player2.getWins() + 1);
 		}
-		System.out.println();
+		
+		//Print player info and call game over menu.
+		printPlayerInfo();
 		gameOver();
 	}
 	
-	private String getPlayerName() {
-		String name = "";
-		try { name = in.readLine(); }
-		catch (IOException e) { System.out.println(e.getMessage()); }
-		return name;
+	private void coinFlip() {
+		//Generate random with: (int)(Math.random() * (HIGH - LOW + 1) + LOW)
+		playerTurn = (int)(Math.random() * (2 - 1 + 1) + 1);
+		switch(playerTurn) {
+		case 1:
+			System.out.println(player1.getName() + " goes first.\n");
+			break;
+		case 2:
+			System.out.println(player2.getName() + " goes first.\n");
+			break;
+		}
+	}
+	
+	private void printGameInfo() {
+		//Display player information.
+		player1.printPlayer();
+		player2.printPlayer();
+		System.out.println();
+		//Display the game board.
+		System.out.println("Game Board:");
+		board.printBoard();
+		System.out.println();
+	}
+	
+	private void printPlayerInfo() {
+		System.out.println("Wins");
+		player1.printWins();
+		player2.printWins();
+		System.out.println();
 	}
 	
 	private void playerTurn(Player p) {
@@ -201,12 +246,12 @@ public class TicTacToe {
 		//Run option chosen by the user.
 		switch(option) {
 		case 1:
+			board.clear();
 			runGame();
 			break;
 		case 2:
 			board.clear();
-			player1.setWins(0);
-			player2.setWins(0);
+			mainMenu();
 			break;
 		default:
 			System.exit(0);
