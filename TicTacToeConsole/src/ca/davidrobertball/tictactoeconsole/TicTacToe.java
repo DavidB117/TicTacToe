@@ -6,20 +6,15 @@
  * Date:					Nov 13, 2017
  */
 
-//TODO	Implement a displayBoard to show quadrants.
-//			This is how the user will select where to place game piece.
-//			Quadrants are numbered from 1 - 9 (for standard game board). Left to right, top to bottom.
-
-//TODO	computerTurn Algorithm:
-//			Find 2 surrounding and take the middle, if empty.
-//			Find 2 in a row and take the 3rd, if empty.
-//			Impement after attempt to set up multiple options.
-
 package ca.davidrobertball.tictactoeconsole;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class TicTacToe {
 	//Attributes
@@ -53,10 +48,11 @@ public class TicTacToe {
 		System.out.println("Main Menu");
 		System.out.println("\t1) Single Player Game");
 		System.out.println("\t2) Multiplayer Game");
-		System.out.println("\t3) How To Play");
-		System.out.println("\t4) Exit");
+		System.out.println("\t3) Load Game");
+		System.out.println("\t4) How To Play");
+		System.out.println("\t5) Exit");
 		System.out.print("Option: ");
-		int option = ValidateInput.getInt(1, 4);
+		int option = ValidateInput.getInt(1, 5);
 		System.out.println();
 		
 		//Run option chosen by the user.
@@ -70,9 +66,13 @@ public class TicTacToe {
 			startGame();
 			break;
 		case 3:
+			loadGame();
+			break;
+		case 4:
 			help();
 			break;
 		default:
+			System.out.println("\nEND PROGRAM");
 			System.exit(0);	
 		}
 	}
@@ -118,6 +118,9 @@ public class TicTacToe {
 	}
 	
 	private void runGame() {
+		//Clear the board from previous games (if any).
+		board.clear();
+		
 		//Print player information and game board.
 		printGameInfo();
 		
@@ -168,6 +171,7 @@ public class TicTacToe {
 		}
 		
 		//Print player info and call game over menu.
+		System.out.println();
 		printPlayerInfo();
 		gameOver();
 	}
@@ -279,24 +283,121 @@ public class TicTacToe {
 	private void gameOver() {
 		System.out.println("Game Over");
 		System.out.println("\t1) Continue Playing");
-		System.out.println("\t2) Main Menu");
-		System.out.println("\t3) Exit");
+		System.out.println("\t2) Save Game");
+		System.out.println("\t3) Main Menu");
+		System.out.println("\t4) Exit");
 		System.out.print("Option: ");
-		int option = ValidateInput.getInt(1, 3);
+		int option = ValidateInput.getInt(1, 4);
 		System.out.println();
 		
 		//Run option chosen by the user.
 		switch(option) {
 		case 1:
-			board.clear();
 			runGame();
 			break;
 		case 2:
-			board.clear();
+			saveGame();
+			System.out.println("Game saved successfully!\n");
+			mainMenu();
+			break;
+		case 3:
 			mainMenu();
 			break;
 		default:
+			System.out.println("\nEND PROGRAM");
 			System.exit(0);
+		}
+	}
+	
+	private void loadGame() {
+		try {
+			BufferedReader savedGame = new BufferedReader(new FileReader("savedgame.txt"));
+			
+			String line = "";
+			int counter = 0;
+			String playerOneName = "";
+			String playerTwoName = "";
+			int wins = 0;
+			try {
+				while((line = savedGame.readLine()) != null) {
+					switch(counter) {
+					case 0:
+						//Determine if singleplayer game or multiplayer game.
+						if(line.equals("singleplayer")) {
+							multiplayer = false;
+						} else if(line.equals("multiplayer")) {
+							multiplayer = true;
+						}
+						break;
+					case 1:
+						//Get player one's name.
+						playerOneName = line;
+						break;
+					case 2:
+						//Get player two's name.
+						playerTwoName = line;
+						//Create Player objects.
+						player1 = new Player(playerOneName, CellValues.CROSS);
+						player2 = new Player(playerTwoName, CellValues.NOUGHT);
+						break;
+					case 3:
+						//Get player one's wins and assign to player1 object.
+						wins = Integer.parseInt(line);
+						player1.setWins(wins);
+						break;
+					case 4:
+						//Get player two's wins and assign to player2 object.
+						wins = Integer.parseInt(line);
+						player2.setWins(wins);
+						break;
+					}
+					counter++;
+				}
+				//Print player information.
+				printPlayerInfo();
+				//Now that the game state is loaded, run the game.
+				runGame();
+				
+			} catch (IOException e) {
+				System.out.println("\nIOException occured when creating savedgame.txt file: " + e.getMessage());
+				System.out.println("Returning to main menu...\\n");
+				mainMenu();
+			}
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("\nSave file not found...");
+			System.out.println("Returning to main menu...\n");
+			mainMenu();
+		}
+	}
+	
+	private void saveGame() {
+		//Create an ouput file to write the game data to.
+		try {
+			PrintWriter savedGame = new PrintWriter(new FileWriter("savedgame.txt"));
+			
+			//Include singleplayer or multiplayer game.
+			if(multiplayer) {
+				savedGame.println("multiplayer");
+			} else {
+				savedGame.println("singleplayer");
+			}
+			
+			//Inlcude player names.
+			savedGame.println(player1.getName());
+			savedGame.println(player2.getName());
+			
+			//Inlcude player scores.
+			savedGame.println(player1.getWins());
+			savedGame.println(player2.getWins());
+			
+			//Close the file.
+			savedGame.close();
+			
+		} catch (IOException e) {
+			System.out.println("\nIOException occured when creating savedgame.txt file: " + e.getMessage());
+			System.out.println("Check user permissions to see if you are able to write to the folder that this game is in.\n");
+			gameOver();
 		}
 	}
 	
