@@ -1,0 +1,79 @@
+README
+------
+Author:		David Ball
+Date:		December 15, 2017
+
+
+
+Program Files:
+--------------
+ValidateInput.java
+Contains static methods that allows the user of the class to get input from the console
+and verify that the input is an integer. Also provides overloaded versions of the getInt()
+method to allow the user to specify a specific integer value they're looking for or to
+specify a range that the input must fall between.
+
+CellValues.java
+Contains enumerated values that represent a space character, a capital x character and a
+capital o character. These characters represent the different values that can be used in
+a cell on the game board.
+
+Cell.java
+Contains attributes for the CellValues and for the row and column the cell is placed in
+on the game board. The game board is made up of Cell objects.
+
+Board.java
+This class contains the game board for tic-tac-toe. Contains a two-dimensional array
+made up of Cell objects that represent the game board.
+
+Player.java
+Contains attributes that represent the players playing the game. Contains the players
+name, number of wins, and the game piece used by the character.
+
+TicTacToe.java
+Implements the game logic that runs the tic-tac-toe game. This file contains the main
+method.
+
+
+
+Program Description:
+--------------------
+Tic Tac Toe is traditionally played on a 3x3 square board. Many people refer to the games
+as X's and O's. Players play as either a cross (X) or a nought (0). The goal is to get a
+row, column, or a diagonal line filled with your game piece (X or O). Be sure to block your
+opponent from getting a win if you spot their strategy. Player 1 will play as cross (X) and
+player 2 will play as nought (O).
+
+The program was created this way to allow for the classes representing the game objects and
+the methods in the TicTacToe class to be reused in a GUI application. For a GUI tic-tac-toe
+implementation the methods for accessing the game Board could easily be reused, with just
+changing the output to be GUI.
+
+Users of the program should expect to be using just the console for running and interacting
+with the program. Users should also understand that to be able to save and load a game they
+need to have permission to read/write to the location that the game is running from.
+
+The only things unique about this tic-tac-toe implementation is that it is entirely run
+through the console and that users have the ability to save and load their tic-tac-toe
+games.
+
+
+
+Problems Encountered:
+---------------------
+The main problem encountered while developing this program pertains to the computer player.
+The AI used in the singleplayer mode isn't very challenging. It doesn't block the user from
+winning before attempting to make a play to win itself. It also doesn't look for an option
+on the board that allows it to win. After playing the center and the corners the AI just
+randomly places its game piece on the board. The user may dislike that the AI is too easy
+to beat.
+
+
+
+Bug Tracker:
+------------
+- Insufficient AI (needs to block player and look for winning move).
+- Need to eliminate spaces and any extra characters entered with an integer (make getInt more robust).
+- NOT A BUG - Need to make ValidateInput more modular. There is too much repetition in the code.
+
+
