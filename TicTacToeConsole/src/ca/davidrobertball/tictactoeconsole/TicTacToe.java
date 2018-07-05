@@ -24,11 +24,13 @@ public class TicTacToe {
 	private boolean multiplayer;
 	private int playerTurn;
 	private BufferedReader in;
+	private ValidateInput vi;
 	
 	//Constructors
 	public TicTacToe(){
 		board = new Board();
 		in = new BufferedReader(new InputStreamReader(System.in));
+		vi = new ValidateInput();
 		//Call the initialize method to run the program and initialize other attributes.
 	}
 	
@@ -52,7 +54,7 @@ public class TicTacToe {
 		System.out.println("\t4) How To Play");
 		System.out.println("\t5) Exit");
 		System.out.print("Option: ");
-		int option = ValidateInput.getInt(1, 5);
+		int option = vi.getInt(1, 5);
 		System.out.println();
 		
 		//Run option chosen by the user.
@@ -214,9 +216,9 @@ public class TicTacToe {
 		while(true) {
 			//Get the location of where the user wants to place their piece.
 			System.out.print("Enter row(1 - " + board.getRows() + "): ");
-			int row = ValidateInput.getInt(1, board.getRows());
+			int row = vi.getInt(1, board.getRows());
 			System.out.print("Enter column(1 - " + board.getColumns() + "): ");
-			int column = ValidateInput.getInt(1, board.getColumns());
+			int column = vi.getInt(1, board.getColumns());
 			System.out.println();
 			
 			//Check to ensure that the space on the board is available.
@@ -287,7 +289,7 @@ public class TicTacToe {
 		System.out.println("\t3) Main Menu");
 		System.out.println("\t4) Exit");
 		System.out.print("Option: ");
-		int option = ValidateInput.getInt(1, 4);
+		int option = vi.getInt(1, 4);
 		System.out.println();
 		
 		//Run option chosen by the user.

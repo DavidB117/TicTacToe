@@ -1,7 +1,7 @@
 README
 ------
 Author:		David Ball
-Date:		December 15, 2017
+Date:		July 04, 2018
 
 
 
@@ -59,21 +59,15 @@ games.
 
 
 
-Problems Encountered:
----------------------
-The main problem encountered while developing this program pertains to the computer player.
-The AI used in the singleplayer mode isn't very challenging. It doesn't block the user from
-winning before attempting to make a play to win itself. It also doesn't look for an option
-on the board that allows it to win. After playing the center and the corners the AI just
-randomly places its game piece on the board. The user may dislike that the AI is too easy
-to beat.
+Features To Implement:
+----------------------
+- Add difficulty levels to select from (easy, medium, hard).
+- Add "impossible" difficulty where the player literally can't win.
 
 
 
 Bug Tracker:
 ------------
-- Insufficient AI (needs to block player and look for winning move).
-- Need to eliminate spaces and any extra characters entered with an integer (make getInt more robust).
-- NOT A BUG - Need to make ValidateInput more modular. There is too much repetition in the code.
+- Insufficient AI (needs to block player and look for winning move) (re: minimax algorithm).
 
 

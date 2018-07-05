@@ -12,14 +12,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ValidateInput {
-	public static int getInt() {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	private BufferedReader in;
+	
+	public ValidateInput() {
+		in = new BufferedReader(new InputStreamReader(System.in));
+	}
+	
+	public int getInt() {
 		int output = 0;
 		while(true) {
 			try {
-				//Attempt to parse input to int, if fails a NumberFormatException is thrown.
-				output = Integer.parseInt(in.readLine());
-				//If parseInt fails the return statement is not executed.
+				output = Integer.parseInt(in.readLine().trim());
 				return output;
 			} catch(NumberFormatException e) {
 				System.out.println("Please enter a valid integer: ");
@@ -29,11 +32,11 @@ public class ValidateInput {
 		}
 	}//End of validateInt method.
 	
-	public static int getInt(BufferedReader in) {
+	public int getInt(BufferedReader brin) {
 		int output = 0;
 		while(true) {
 			try {
-				output = Integer.parseInt(in.readLine());
+				output = Integer.parseInt(brin.readLine().trim());
 				return output;
 			} catch(NumberFormatException e) {
 				System.out.print("Please enter a valid integer: ");
@@ -43,14 +46,12 @@ public class ValidateInput {
 		}
 	}//End of validateInt method.
 	
-	public static int getInt(int value) {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	public int getInt(int value) {
 		String errorMessage = "Please enter the integer value " + value + ": ";
 		int output = 0;
 		while(true) {
 			try {
-				output = Integer.parseInt(in.readLine());
-				//If the input is a valid int, check if it matches the value specified.
+				output = Integer.parseInt(in.readLine().trim());
 				if(output != value) {
 					System.out.print(errorMessage);
 				} else {
@@ -64,12 +65,12 @@ public class ValidateInput {
 		}
 	}//End of getInt method.
 	
-	public static int getInt(int value, BufferedReader in) {
+	public int getInt(int value, BufferedReader brin) {
 		String errorMessage = "Please enter the integer value " + value + ": ";
 		int output = 0;
 		while(true) {
 			try {
-				output = Integer.parseInt(in.readLine());
+				output = Integer.parseInt(brin.readLine().trim());
 				if(output != value) {
 					System.out.print(errorMessage);
 				} else {
@@ -83,18 +84,18 @@ public class ValidateInput {
 		}
 	}//End of getInt method.
 	
-	public static int getInt(int startRange, int endRange) {
+	public int getInt(int startRange, int endRange) {
 		if(startRange > endRange) {
 			int temp = endRange;
 			endRange = startRange;
 			startRange = temp;
 		}
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		
 		String errorMessage = "Please enter a valid integer between " + startRange + " and " + endRange +": ";
 		int output = 0;
 		while(true) {
 			try {
-				output = Integer.parseInt(in.readLine());
+				output = Integer.parseInt(in.readLine().trim());
 				if(output < startRange || output > endRange) {
 					System.out.print(errorMessage);
 				} else {
@@ -108,17 +109,18 @@ public class ValidateInput {
 		}
 	}//End of validateInt method.
 	
-	public static int getInt(int startRange, int endRange, BufferedReader in) {
+	public static int getInt(int startRange, int endRange, BufferedReader brin) {
 		if(startRange > endRange) {
 			int temp = endRange;
 			endRange = startRange;
 			startRange = temp;
 		}
+		
 		String errorMessage = "Please enter a valid integer between " + startRange + " and " + endRange +": ";
 		int output = 0;
 		while(true) {
 			try {
-				output = Integer.parseInt(in.readLine());
+				output = Integer.parseInt(brin.readLine().trim());
 				if(output < startRange || output > endRange) {
 					System.out.print(errorMessage);
 				} else {
